@@ -1,48 +1,47 @@
-## auto bookshelf organizing
+### @Zhengli
+![alt text](https://raw.githubusercontent.com/andreasbm/readme/master/assets/logo-shadow.png)
 
-### Create virtual environment
+Zhengli---Catalogue and organize your book collection based off images shot from your camera. We are offering an API service
+that uses data science to automatically detect and recognize books that it finds in user submitted images of bookshelves. 
 
-Each project is self contained and has requires specific in a `requirements.txt`
-To make things isolated, for each project you will create a separate
-python virtual environment. This allows us to separate our dependancies and track them.
+Future Features:
+Organize books by genre and categories.
 
-You will need to have python 3.7.4 in your path.
-
-If it is your first time in a project:
+## How to use Zhengli
 ```
-python -m venv .venv
-source .venv/bin/activate
-cd bookshelf
-pip install -r requirements.txt
+git clone https://github.com/dingchaoz/bookshelf.git
+docker build -t zhengli .
+docker run --rm -p 5000:8080 zhengli 
 ```
-To install the our book organizing library(package named as zhengli for now), run:
+then send a book shelf image to the service
 ```
-pip install -e .
+curl -X POST -H 'content-type: application/json' --data '{"file":"IMG_20190904_155939359.jpg"}' http://127.0.0.1:5000/api
 ```
-Confirm zhengli is installed correctly, run the following in Python terminal:
+sample information returned about the books from the shelf image
 ```
-import zhengli
-from zhengli.core import dewey_decimal_api
+ddc is 793.9 and best match book is {'title': 'Warcraft Ii: Beyond The Dark Portal: Official Secrets And Solutions (secrets Of The Games Series)', 'image': 'https://images.isbndb.com/covers/78/71/9780761507871.jpg', 'title_long': 'Warcraft Ii: Beyond The Dark Portal: Official Secrets And Solutions (secrets Of The Games Series)', 'date_published': '1996', 'publisher': 'Prima Games', 'synopsys': 'With This Expansion Disk To Warcraft Ii: Tides Of Darkness, Players Can Extend Their Warcraft Experience As They Delve Into The Orcs Homeland For The First Time To Experience An Entirely New Set Of Challenges. Players Can Compete In Head-to-head Battles Against As Many As Eight Players.', 'authors': ['Mark Walker'], 'isbn13': '9780761507871', 'msrp': '14.99', 'publish_date': '1996', 'binding': 'Paperback', 'isbn': '0761507876'}
 ```
 
-## WARNING that this line should only be run when a completely new virual environment is created:
-```
-python -m venv .venv
-```
-## Recreate virtual environment with the same name will wipe out all previous installed packages.
-After virtual venv is created, we only need to run the following line to enter the virtual venv to use it:
-```
-source .venv/bin/activate
-```
-If there a requirements.txt need to be created or updated:
-```
-pip freeze > requirements.txt
-```
-Or when you add a new dependency to your project you can manually add it to the
-`requirements.txt` file.
+## How does Zhengli work?
+At a high level, Zhengli uses a combination of computer vision, image processing, and natural language processing to detect books in images of bookshelves. Breaking it down a little further, these are the main steps involved. A more detailed description of each step in the algorithm is presented in the following sections.
 
-To exit virtual environment in terminal
-```
-deactivate
-```
+Zhengli's algorithm:
 
+- Detect all instances of book shapes in the image
+- Split books into individual one by its spine
+- Detect all instances of text in each book image
+- Spell correct text detected
+- Extract book title, publisher, author from detected text associated with a book
+- Perform a search on the book, titile and publisher for a match on open library API
+- Validate the book using its original camera image and its image on open library website
+- Get the ISBN number from the book
+- Get the Deway Decimal number and other
+- Return the following information about the books: title, author, publisher, publishing date, ISBN, deway decimal number.
+
+## Authors
+Sarah Hudspeth, Dingchao Zhang
+
+## Contributing
+Contributions, issues and feature requests are welcome.
+Feel free to check issues page if you want to contribute.
+Check the contributing guide.
